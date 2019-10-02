@@ -1,0 +1,93 @@
+:spring_version: current
+:spring_boot_version: 2.1.6.RELEASE
+:Controller: http://docs.spring.io/spring/docs/{spring_version}/javadoc-api/org/springframework/stereotype/Controller.html
+:DispatcherServlet: http://docs.spring.io/spring/docs/{spring_version}/javadoc-api/org/springframework/web/servlet/DispatcherServlet.html
+:SpringApplication: http://docs.spring.io/spring-boot/docs/{spring_boot_version}/api/org/springframework/boot/SpringApplication.html
+:ResponseBody: http://docs.spring.io/spring/docs/{spring_version}/javadoc-api/org/springframework/web/bind/annotation/ResponseBody.html
+:toc:
+:icons: font
+:source-highlighter: prettify
+:project_id: draft-gs-template
+This guide walks you through the process of creating a Spring application.
+
+== What you'll build
+
+You'll build a microservice application that uses Spring Cloud LoadBalancer to provide 
+client-side load-balancing in calls to another microservice.
+
+
+== What you'll need
+
+:java_version: 1.8
+include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/prereq_editor_jdk_buildtools.adoc[]
+
+include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/how_to_complete_this_guide.adoc[]
+
+
+include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/hide-show-gradle.adoc[]
+
+include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/hide-show-maven.adoc[]
+
+include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/hide-show-sts.adoc[]
+
+
+
+[[initial]]
+== Implement `Say Hello` service
+
+Our “server” service is called Say Hello. It will return a random greeting (picked out of a static list of three) from an endpoint accessible at `/greeting`.
+
+In `src/main/java/hello`, create the file `SayHelloApplication.java`. It should look like this:
+
+say-hello/src/main/java/hello/SayHelloApplication.java
+
+link:complete/say-hello/src/main/java/hello/SayHelloApplication.java[]
+
+The @RestController annotation gives the same effect as if we were using @Controller and @ResponseBody together. It marks SayHelloApplication as a controller class (which is what @Controller does) and ensures that return values from the class’s @RequestMapping methods will be automatically converted appropriately from their original types and written directly to the response body (which is what @ResponseBody does). We have one @RequestMapping method for /greeting and then another for the root path /. (We’ll want that second method when we get to working with Ribbon in just a bit.)
+
+We’re going to run multiple instances of this application locally alongside a client service application, so create the directory src/main/resources, create the file application.yml within it, and then in that file, set a default value for server.port. (We’ll instruct the other instances of the application to run on other ports, as well, so that none of the Say Hello instances will conflict with the client when we get that running.) While we’re in this file, we’ll set the spring.application.name for our service too.
+
+say-hello/src/main/resources/application.yml
+
+link:complete/say-hello/src/main/resources/application.yml[]
+
+
+
+NOTE: The above example does not specify `GET` vs. `PUT`, `POST`, and so forth, because `@RequestMapping` maps all HTTP operations by default. Use `@RequestMapping(method=GET)` to narrow this mapping.
+
+
+== Make the application executable
+
+Although it is possible to package this service as a traditional link:/understanding/WAR[WAR] file for deployment to an external application server, the simpler approach demonstrated below creates a standalone application. You package everything in a single, executable JAR file, driven by a good old Java `main()` method. Along the way, you use Spring's support for embedding the link:/understanding/Tomcat[Tomcat] servlet container as the HTTP runtime, instead of deploying to an external instance.
+
+
+`src/main/java/hello/Application.java`
+[source,java]
+----
+include::complete/src/main/java/hello/Application.java[]
+----
+
+include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/spring-boot-application.adoc[]
+
+include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/build_an_executable_jar_subhead.adoc[]
+
+include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/build_an_executable_jar_with_both.adoc[]
+
+
+Logging output is displayed. The service should be up and running within a few seconds.
+
+
+== Test the application
+
+Now that the application is running, you can test it.
+
+
+== Summary
+
+Congratulations! You've just developed a Spring application! 
+
+
+
+
+include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/footer.adoc[]
+
