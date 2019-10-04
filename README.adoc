@@ -33,9 +33,10 @@ include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/
 
 
 [[initial]]
-== Implement `Say Hello` service
+== Implement "Say Hello" service
 
-Our “server” service is called Say Hello. It will return a random greeting (picked out of a static list of three) from an endpoint accessible at `/greeting`.
+Our "server" service is called "Say Hello".
+It will return a random greeting (picked out of a static list of three) from an endpoint accessible at `/greeting`.
 
 In `src/main/java/hello`, create the file `SayHelloApplication.java`. It should look like this:
 
@@ -46,38 +47,141 @@ In `src/main/java/hello`, create the file `SayHelloApplication.java`. It should 
 include::complete/say-hello/src/main/java/hello/SayHelloApplication.java[]
 ----
 
-The @RestController annotation gives the same effect as if we were using @Controller and @ResponseBody together. It marks SayHelloApplication as a controller class (which is what @Controller does) and ensures that return values from the class’s @RequestMapping methods will be automatically converted appropriately from their original types and written directly to the response body (which is what @ResponseBody does). We have one @RequestMapping method for /greeting and then another for the root path /. (We’ll want that second method when we get to working with Ribbon in just a bit.)
+It's a simple `@RestController`, where we have one `@RequestMapping method` for `/greeting` and then another for the root path `/`.
 
-We’re going to run multiple instances of this application locally alongside a client service application, so create the directory src/main/resources, create the file application.yml within it, and then in that file, set a default value for server.port. (We’ll instruct the other instances of the application to run on other ports, as well, so that none of the Say Hello instances will conflict with the client when we get that running.) While we’re in this file, we’ll set the spring.application.name for our service too.
+We’re going to run multiple instances of this application locally alongside a client service application, so create the directory `src/main/resources`, create the file `application.yml` within it, and then, in that file, set a default value for server.port.
+(We’ll instruct the other instances of the application to run on other ports, as well, so that none of the `Say Hello` instances will conflict with the client when we get that running).
+While we’re in this file, we’ll set the `spring.application.name` for our service too.
 
-say-hello/src/main/resources/application.yml
+`say-hello/src/main/resources/application.yml`
 
-link:complete/say-hello/src/main/resources/application.yml[]
-
-
-
-NOTE: The above example does not specify `GET` vs. `PUT`, `POST`, and so forth, because `@RequestMapping` maps all HTTP operations by default. Use `@RequestMapping(method=GET)` to narrow this mapping.
-
-
-== Make the application executable
-
-Although it is possible to package this service as a traditional link:/understanding/WAR[WAR] file for deployment to an external application server, the simpler approach demonstrated below creates a standalone application. You package everything in a single, executable JAR file, driven by a good old Java `main()` method. Along the way, you use Spring's support for embedding the link:/understanding/Tomcat[Tomcat] servlet container as the HTTP runtime, instead of deploying to an external instance.
-
-
-`src/main/java/hello/Application.java`
 [source,java]
 ----
-include::complete/src/main/java/hello/Application.java[]
+include::complete/say-hello/src/main/resources/application.yml[]
 ----
 
-include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/spring-boot-application.adoc[]
+== Access from a client service
 
-include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/build_an_executable_jar_subhead.adoc[]
+The "User" application will be what our user sees.
+It will make a call to the Say Hello application to get a greeting and then send that to our user when the user visits the endpoints at `/hi` and `/hello`.
 
-include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/build_an_executable_jar_with_both.adoc[]
+In the User application directory, under `src/main/java/hello`, add the file `UserApplication.java`:
 
+`user/src/main/java/hello/UserApplication.java`
 
-Logging output is displayed. The service should be up and running within a few seconds.
+[source,java]
+----
+include::complete/user/src/main/java/hello/UserApplication.java[]
+----
+
+We also add a `@Configuration` class where we will set up a load-balanced `WebClient.Builder` instance:
+
+`user/src/main/java/hello/WebClientConfig.java`
+
+[source,java]
+----
+include::complete/user/src/main/java/hello/WebClientConfig.java[]
+----
+
+The configuration provides a `@LoadBalanced WebClient.Builder` instance, that we use when someone hits the `hi` endpoint of
+`UserApplication.java`.
+Once the `hi` endpoint is hit, we will use this builder to create a `WebClient` instance which will be used to make an HTTP `GET` request to the Say Hello service's URL and give us the result as a `String`.
+
+In `UserApplication.java`, we have also added a `/hello` endpoint that does the same action underneath, however, rather than using the `@LoadBalanced` annotation, we make use of an `@Autowired` load-balancer exchange filter function `lbFunction` that we pass using the `filter()` method to a `WebClient` instance that we are building programmatically.
+
+TIP: Even though we set up the load-balanced `WebClient` instance slightly differently for the two endpoints, the end behaviour for both is exactly the same.
+Spring Cloud LoadBalancer is used underneath to select an appropriate instance of the "Say Hello" service.
+
+Add the `spring.application.name` and `server.port` properties to `src/main/resources/application.properties` or `src/main/resources/application.yml`:
+
+`user/src/main/resources/application.yml`
+
+[source,yaml]
+----
+include::complete/user/src/main/resources/application.yml[]
+----
+
+== Load-balance across server instances
+
+Now we can access `/hi` or `hello` on the User service and see a friendly greeting:
+
+[source,bash]
+----
+$ curl http://localhost:8888/hi
+Greetings, Mary!
+
+$ curl http://localhost:8888/hi?name=Orontes
+Salutations, Orontes!
+----
+
+As you will see, in `WebClientConfig.java`, we pass a custom configuration for the LoadBalancer using the `@LoadBalancerClient` annotation:
+
+`@LoadBalancerClient(name = "say-hello", configuration = SayHelloConfiguration.class)`.
+This means that whenever a service named `say-hello` is being contacted, instead of running with the default setup, Spring Cloud LoadBalancer will use the configuration provided in `SayHelloConfiguration.java`:
+
+`user/src/main/java/hello/SayHelloConfiguration.java`
+
+[source,java]
+----
+include::complete/user/src/main/java/hello/SayHelloConfiguration.java[]
+----
+
+There, we provide a custom `ServiceInstanceListSupplier` with 3 hard-coded instances that Sprign Cloud LoadBalancer will choose from while making the calls to the "Say Hello" service.
+
+NOTE: This step has been added to explain how you can pass your own custom configuration to the Spring Cloud LoadBalancer.
+However, you don't need to use the `@LoadBalancerClient` annotation and create your own configuration for the LoadBalancer.
+The most typical way, is to use Spring Cloud LoadBalancer with service discovery.
+If you have any `DiscoveryClient` on your classpath, the default Spring Cloud LoadBalancer configuration will use it under the hood to check for service instances.
+
+We also add an `application.yml` file with default `server.port` and `spring.application.name`:
+
+`user/src/main/resources/application.yml`
+
+[source,yaml]
+----
+include::complete/user/src/main/resources/application.yml[]
+----
+
+== Trying it out
+
+Run the Say Hello service, using either Gradle:
+
+----
+$ ./gradlew bootRun
+----
+
+or Maven:
+
+----
+$ mvn spring-boot:run
+----
+
+Run other instances on ports 9092 and 9999, again using either Gradle:
+
+----
+$ SERVER_PORT=9092 ./gradlew bootRun
+----
+
+or Maven:
+
+----
+$ SERVER_PORT=9999 mvn spring-boot:run
+----
+
+Then start up the User service.
+Access `localhost:8888/hi` and then watch the Say Hello service instances.
+You can see Ribbon's pings arriving every 15 seconds:
+
+----
+2016-03-09 21:13:22.115  INFO 90046 --- [nio-8090-exec-1] hello.SayHelloApplication                : Access /
+2016-03-09 21:13:22.629  INFO 90046 --- [nio-8090-exec-3] hello.SayHelloApplication                : Access /
+----
+
+And your requests to the User service should result in calls to Say Hello being spread across the running instances in round-robin form:
+
+----
+2016-03-09 21:15:28.915  INFO 90046 --- [nio-8090-exec-7] hello.SayHelloApplication                : Access /greeting
+----
 
 
 == Test the application

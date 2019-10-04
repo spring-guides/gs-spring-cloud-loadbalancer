@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -22,7 +22,7 @@ public class SayHelloApplication {
 		SpringApplication.run(SayHelloApplication.class, args);
 	}
 
-  @RequestMapping(value = "/greeting")
+  @GetMapping("/greeting")
   public String greet() {
     log.info("Access /greeting");
 
@@ -33,7 +33,7 @@ public class SayHelloApplication {
     return greetings.get(randomNum);
   }
 
-  @RequestMapping(value = "/")
+  @GetMapping("/")
   public String home() {
     log.info("Access /");
     return "Hi!";
