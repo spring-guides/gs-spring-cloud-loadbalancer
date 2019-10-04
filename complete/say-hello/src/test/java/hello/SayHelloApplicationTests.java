@@ -15,21 +15,22 @@
  */
 package hello;
 
-import static org.assertj.core.api.BDDAssertions.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@RunWith(SpringRunner.class)
+import static org.assertj.core.api.BDDAssertions.then;
+
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = SayHelloApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class SayHelloApplicationTests {
+class SayHelloApplicationTests {
 
 	@LocalServerPort
 	private int port;
@@ -38,18 +39,20 @@ public class SayHelloApplicationTests {
 	private TestRestTemplate testRestTemplate;
 
 	@Test
-	public void shouldReturn200WhenSendingRequestToRoot() throws Exception {
-		@SuppressWarnings("rawtypes") ResponseEntity<String> entity = this.testRestTemplate.getForEntity(
-				"http://localhost:" + this.port + "/", String.class);
+	void shouldReturn200WhenSendingRequestToRoot() {
+		@SuppressWarnings("rawtypes") ResponseEntity<String> entity = testRestTemplate
+				.getForEntity(
+						"http://localhost:" + port + "/", String.class);
 
 		then(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
 		then(entity.getBody()).isEqualTo("Hi!");
 	}
 
 	@Test
-	public void shouldReturn200WhenSendingRequestToGreeting() throws Exception {
-		@SuppressWarnings("rawtypes") ResponseEntity<String> entity = this.testRestTemplate.getForEntity(
-				"http://localhost:" + this.port + "/greeting", String.class);
+	void shouldReturn200WhenSendingRequestToGreeting() {
+		@SuppressWarnings("rawtypes") ResponseEntity<String> entity = testRestTemplate
+				.getForEntity(
+						"http://localhost:" + port + "/greeting", String.class);
 
 		then(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
 		then(entity.getBody()).isNotEmpty();

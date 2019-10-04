@@ -12,6 +12,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
+/**
+ * @author Olga Maciaszek-Sharma
+ */
 @Configuration
 public class SayHelloConfiguration {
 
@@ -41,7 +44,7 @@ class DemoServiceInstanceListSuppler implements ServiceInstanceListSupplier {
 		return Flux.just(Arrays
 				.asList(new DefaultServiceInstance(serviceId + "1", serviceId, "localhost", 8090, false),
 						new DefaultServiceInstance(serviceId + "2", serviceId, "localhost", 9092, false),
-						new DefaultServiceInstance(serviceId + "3", serviceId, "localhost", 9099, false)));
+						new DefaultServiceInstance(serviceId + "3", serviceId, "localhost", 9999, false)));
 	}
 }
 
