@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '2.1.6.RELEASE'
+		springBootVersion = '2.2.0.RC1'
 	}
 	repositories {
 		mavenCentral()
@@ -28,14 +28,14 @@ repositories {
 
 
 dependencies {
-	compile('org.springframework.cloud:spring-cloud-starter-netflix-ribbon')
-	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.springframework.cloud:spring-cloud-starter-loadbalancer')
+	compile('org.springframework.boot:spring-boot-starter-webflux')
 	testCompile('org.springframework.boot:spring-boot-starter-test') 
 }
 
 dependencyManagement {
 	imports { 
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:Greenwich.SR3"
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:Hoxton.M3"
 	}
 }
 

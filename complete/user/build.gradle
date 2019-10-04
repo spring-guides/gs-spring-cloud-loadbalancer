@@ -1,10 +1,11 @@
 buildscript {
   ext {
-//     TODO: switch to correct version
-    springBootVersion = '2.2.0.BUILD-SNAPSHOT'
+    springBootVersion = '2.2.0.RC1'
   }
   repositories {
     mavenCentral()
+    // TODO: remove after switching to GA
+    maven { url "https://repo.spring.io/milestone" }
   }
   dependencies {
     classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
@@ -25,6 +26,8 @@ targetCompatibility = 1.8
 
 repositories {
   mavenCentral()
+  // TODO: remove after switching to GA
+  maven { url "https://repo.spring.io/milestone" }
 }
 
 
@@ -36,8 +39,7 @@ dependencies {
 
 dependencyManagement {
   imports {
-    //  TODO: switch to milestone version
-    mavenBom "org.springframework.cloud:spring-cloud-dependencies:Hoxton.BUILD-SNAPSHOT"
+    mavenBom "org.springframework.cloud:spring-cloud-dependencies:Hoxton.M3"
   }
 }
 
