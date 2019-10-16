@@ -1,0 +1,52 @@
+buildscript {
+  ext {
+    springBootVersion = '2.2.0.RC1'
+  }
+  repositories {
+    mavenCentral()
+    // TODO: remove after switching to GA
+    maven { url "https://repo.spring.io/milestone" }
+  }
+  dependencies {
+    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
+  }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+bootJar {
+  baseName = 'user'
+  version = '0.0.1-SNAPSHOT'
+}
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+  mavenCentral()
+  // TODO: remove after switching to GA
+  maven { url "https://repo.spring.io/milestone" }
+}
+
+
+dependencies {
+  compile('org.springframework.cloud:spring-cloud-starter-loadbalancer')
+  compile('org.springframework.boot:spring-boot-starter-webflux')
+  testCompile('org.springframework.boot:spring-boot-starter-test') 
+}
+
+dependencyManagement {
+  imports {
+    mavenBom "org.springframework.cloud:spring-cloud-dependencies:Hoxton.M3"
+  }
+}
+
+eclipse {
+  classpath {
+     containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
+     containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
+  }
+}
+
