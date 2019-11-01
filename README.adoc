@@ -126,7 +126,7 @@ This means that whenever a service named `say-hello` is being contacted, instead
 include::complete/user/src/main/java/hello/SayHelloConfiguration.java[]
 ----
 
-There, we provide a custom `ServiceInstanceListSupplier` with 3 hard-coded instances that Sprign Cloud LoadBalancer will choose from while making the calls to the "Say Hello" service.
+There, we provide a custom `ServiceInstanceListSupplier` with 3 hard-coded instances that Spring Cloud LoadBalancer will choose from while making the calls to the "Say Hello" service.
 
 NOTE: This step has been added to explain how you can pass your own custom configuration to the Spring Cloud LoadBalancer.
 However, you don't need to use the `@LoadBalancerClient` annotation and create your own configuration for the LoadBalancer.
