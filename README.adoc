@@ -42,7 +42,7 @@ In `src/main/java/hello`, create the file `SayHelloApplication.java`. It should 
 
 `say-hello/src/main/java/hello/SayHelloApplication.java`
 
-[source,java]
+[source,java,tabsize=2]
 ----
 include::complete/say-hello/src/main/java/hello/SayHelloApplication.java[]
 ----
@@ -55,7 +55,7 @@ While we’re in this file, we’ll set the `spring.application.name` for our se
 
 `say-hello/src/main/resources/application.yml`
 
-[source,java]
+[source,java,tabsize=2]
 ----
 include::complete/say-hello/src/main/resources/application.yml[]
 ----
@@ -69,7 +69,7 @@ In the User application directory, under `src/main/java/hello`, add the file `Us
 
 `user/src/main/java/hello/UserApplication.java`
 
-[source,java]
+[source,java,tabsize=2]
 ----
 include::complete/user/src/main/java/hello/UserApplication.java[]
 ----
@@ -78,7 +78,7 @@ We also add a `@Configuration` class where we will set up a load-balanced `WebCl
 
 `user/src/main/java/hello/WebClientConfig.java`
 
-[source,java]
+[source,java,tabsize=2]
 ----
 include::complete/user/src/main/java/hello/WebClientConfig.java[]
 ----
@@ -121,7 +121,7 @@ This means that whenever a service named `say-hello` is being contacted, instead
 
 `user/src/main/java/hello/SayHelloConfiguration.java`
 
-[source,java]
+[source,java,tabsize=2]
 ----
 include::complete/user/src/main/java/hello/SayHelloConfiguration.java[]
 ----

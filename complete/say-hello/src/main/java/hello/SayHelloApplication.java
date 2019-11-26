@@ -24,18 +24,18 @@ public class SayHelloApplication {
 
   @GetMapping("/greeting")
   public String greet() {
-    log.info("Access /greeting");
+	log.info("Access /greeting");
 
-    List<String> greetings = Arrays.asList("Hi there", "Greetings", "Salutations");
-    Random rand = new Random();
+	List<String> greetings = Arrays.asList("Hi there", "Greetings", "Salutations");
+	Random rand = new Random();
 
-    int randomNum = rand.nextInt(greetings.size());
-    return greetings.get(randomNum);
+	int randomNum = rand.nextInt(greetings.size());
+	return greetings.get(randomNum);
   }
 
   @GetMapping("/")
   public String home() {
-    log.info("Access /");
-    return "Hi!";
+	log.info("Access /");
+	return "Hi!";
   }
 }
