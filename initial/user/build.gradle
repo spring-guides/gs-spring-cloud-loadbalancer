@@ -37,7 +37,7 @@ dependencies {
 
 dependencyManagement {
 	imports { 
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:Hoxton.RC2"
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:Hoxton.RELEASE"
 	}
 }
 
