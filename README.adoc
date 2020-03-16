@@ -7,7 +7,7 @@
 :toc:
 :icons: font
 :source-highlighter: prettify
-:project_id: draft-gs-template
+:project_id: gs-spring-cloud-loadbalancer
 This guide walks you through the process of creating load-balanced microservices.
 
 == What you'll build
