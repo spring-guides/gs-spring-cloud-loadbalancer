@@ -1,5 +1,5 @@
 :spring_version: current
-:spring_boot_version: 2.2.1.RELEASE
+:spring_boot_version: 2.3.2.RELEASE
 :Controller: http://docs.spring.io/spring/docs/{spring_version}/javadoc-api/org/springframework/stereotype/Controller.html
 :DispatcherServlet: http://docs.spring.io/spring/docs/{spring_version}/javadoc-api/org/springframework/web/servlet/DispatcherServlet.html
 :SpringApplication: http://docs.spring.io/spring-boot/docs/{spring_boot_version}/api/org/springframework/boot/SpringApplication.html
@@ -12,7 +12,7 @@ This guide walks you through the process of creating load-balanced microservices
 
 == What you'll build
 
-You'll build a microservice application that uses Spring Cloud LoadBalancer to provide 
+You'll build a microservice application that uses Spring Cloud LoadBalancer to provide
 client-side load-balancing in calls to another microservice.
 
 
@@ -186,10 +186,9 @@ Now that the application is running, you can test it.
 
 == Summary
 
-Congratulations! You've just developed a Spring application! 
+Congratulations! You've just developed a Spring application!
 
 
 
 
 include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/footer.adoc[]
-
