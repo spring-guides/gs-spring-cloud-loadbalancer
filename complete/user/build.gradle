@@ -1,6 +1,6 @@
 buildscript {
   ext {
-    springBootVersion = '2.2.1.RELEASE'
+    springBootVersion = '2.3.2.RELEASE'
   }
   repositories {
     mavenCentral()
@@ -8,7 +8,7 @@ buildscript {
     maven { url "https://repo.spring.io/milestone" }
   }
   dependencies {
-    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
+    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
   }
 }
 
@@ -34,7 +34,7 @@ repositories {
 dependencies {
   compile('org.springframework.cloud:spring-cloud-starter-loadbalancer')
   compile('org.springframework.boot:spring-boot-starter-webflux')
-  testCompile('org.springframework.boot:spring-boot-starter-test') 
+  testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
 dependencyManagement {
@@ -49,4 +49,3 @@ eclipse {
      containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
   }
 }
-
