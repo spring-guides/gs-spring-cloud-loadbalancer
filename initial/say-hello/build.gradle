@@ -1,11 +1,9 @@
 buildscript {
 	ext {
-		springBootVersion = '2.3.2.RELEASE'
+		springBootVersion = '2.4.1'
 	}
 	repositories {
 		mavenCentral()
-		// TODO: remove after switching to GA
-		maven { url "https://repo.spring.io/milestone" }
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
