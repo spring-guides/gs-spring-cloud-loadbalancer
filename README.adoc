@@ -1,5 +1,5 @@
 :spring_version: current
-:spring_boot_version: 2.3.2.RELEASE
+:spring_boot_version: 2.4.2
 :Controller: http://docs.spring.io/spring/docs/{spring_version}/javadoc-api/org/springframework/stereotype/Controller.html
 :DispatcherServlet: http://docs.spring.io/spring/docs/{spring_version}/javadoc-api/org/springframework/web/servlet/DispatcherServlet.html
 :SpringApplication: http://docs.spring.io/spring-boot/docs/{spring_boot_version}/api/org/springframework/boot/SpringApplication.html
@@ -10,101 +10,201 @@
 :project_id: gs-spring-cloud-loadbalancer
 This guide walks you through the process of creating load-balanced microservices.
 
-== What you'll build
+== What You Will Build
 
-You'll build a microservice application that uses Spring Cloud LoadBalancer to provide
+You will build a microservice application that uses Spring Cloud LoadBalancer to provide
 client-side load-balancing in calls to another microservice.
 
 
-== What you'll need
+== What You Will Need
 
-:java_version: 1.8
-include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/prereq_editor_jdk_buildtools.adoc[]
+* About 15 minutes
+* A favorite text editor or IDE
+* JDK 1.8 or later
+* Gradle 6+ or Maven 3.5+
+* You can also import the code straight into your IDE:
+* Spring Tool Suite (STS) or IntelliJ IDEA
 
-include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/how_to_complete_this_guide.adoc[]
+[scratch]
+== Create a Root Project
+
+This guide walks through building two projects, one of which is a dependency to the other.
+Consequently, you need to create two child projects under a root project. First, create
+the build configuration at the top level. For Maven, you need a `pom.xml` with `<modules>`
+that list the subdirectories:
+
+====
+[src,xml]
+----
+include::complete/pom.xml[]
+----
+====
+
+For Gradle, you need want a `settings.gradle` that includes the same directories:
+
+====
+[src,groovy]
+----
+include::complete/settings.gradle[]
+----
+====
+
+Optionally, you can include an empty `build.gradle` (to help IDEs identify the root directory).
 
 
-include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/hide-show-gradle.adoc[]
+=== Create the Directory Structure
 
-include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/hide-show-maven.adoc[]
+In the directory that you want to be your root directory, create the following
+subdirectory structure (for example, with `mkdir say-hello user` on *nix systems):
 
-include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/hide-show-sts.adoc[]
+    └── say-hello
+    └── user
 
-
+In the root of the project, you need to set up a build system, and this guide shows
+you how to use Maven or Gradle.
 
 [[initial]]
-== Implement "Say Hello" service
+== Starting with Spring Initializr
 
-Our "server" service is called "Say Hello".
-It will return a random greeting (picked out of a static list of three) from an endpoint accessible at `/greeting`.
+For all Spring applications, you should start with the https://start.spring.io[Spring
+Initializr]. The Initializr offers a fast way to pull in all the dependencies you need for
+an application and does a lot of the setup for you. For this guide, you need to run the
+Spring Initializr twice, once for the `Say Hello` project and once for the `User` project.
 
-In `src/main/java/hello`, create the file `SayHelloApplication.java`. It should look like this:
+The `Say Hello` project needs only the Spring Web dependency.
+You can get a Maven build file with the necessary dependencies for the `Say Hello` project
+directly from the https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.4.2.RELEASE&packaging=jar&jvmVersion=11&groupId=com.example&artifactId=spring-cloud-loadbalancer-say-hello&name=spring-cloud-loadbalancer-say-hello&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.spring-cloud-loadbalancer-say-hello&dependencies=web[Spring Initializr].
+The following listing shows the `pom.xml` file that is created when you choose Maven:
 
-`say-hello/src/main/java/hello/SayHelloApplication.java`
+====
+[source,xml]
+----
+include::initial/say-hello/pom.xml[]
+----
+====
 
+You can get a Gradle build file with the necessary dependencies for the `Say Hello` project
+directly from the https://start.spring.io/#!type=gradle-project&language=java&platformVersion=2.4.2.RELEASE&packaging=jar&jvmVersion=11&groupId=com.example&artifactId=spring-cloud-loadbalancer-say-hello&name=spring-cloud-loadbalancer-say-hello&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.spring-cloud-loadbalancer-say-hello&dependencies=web[Spring Initializr].
+The following listing shows the `build.gradle` file that is created when you choose Gradle:
+
+====
+[source,text]
+----
+include::initial/say-hello/build.gradle[]
+----
+====
+
+The `User` project needs the Cloud Loadbalancer and Spring Reactive Web dependencies.
+You can get a Maven build file with the necessary dependencies for the `User` project
+directly from the https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.4.2.RELEASE&packaging=jar&jvmVersion=11&groupId=com.example&artifactId=spring-cloud-loadbalancer-user&name=spring-cloud-loadbalancer-user&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.spring-cloud-loadbalancer-user&dependencies=cloud-loadbalancer,webflux[Spring Initializr].
+The following listing shows the `pom.xml` file that is created when you choose Maven:
+
+====
+[source,xml]
+----
+include::initial/user/pom.xml[]
+----
+====
+
+You can get a Gradle build file with the necessary dependencies for the `User` project
+directly from the https://start.spring.io/#!type=gradle-project&language=java&platformVersion=2.4.2.RELEASE&packaging=jar&jvmVersion=11&groupId=com.example&artifactId=spring-cloud-loadbalancer-user&name=spring-cloud-loadbalancer-user&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.spring-cloud-loadbalancer-user&dependencies=cloud-loadbalancer,webflux[Spring Initializr].
+The following listing shows the `build.gradle` file that is created when you choose Gradle:
+
+====
+[source,text]
+----
+include::initial/user/build.gradle[]
+----
+====
+
+== Implement the "Say Hello" service
+
+Our "`server`" service is called `Say Hello`.
+It returns a random greeting (picked out of a static list of three) from an endpoint that is accessible at `/greeting`.
+
+In `src/main/java/hello`, create the file `SayHelloApplication.java`.
+
+The following listing shows the contents of `say-hello/src/main/java/hello/SayHelloApplication.java`:
+
+====
 [source,java,tabsize=2]
 ----
 include::complete/say-hello/src/main/java/hello/SayHelloApplication.java[]
 ----
+====
 
-It's a simple `@RestController`, where we have one `@RequestMapping method` for `/greeting` and then another for the root path `/`.
+It is a simple `@RestController`, where we have one `@RequestMapping method` for the `/greeting` and another for the root path `/`.
 
-We’re going to run multiple instances of this application locally alongside a client service application, so create the directory `src/main/resources`, create the file `application.yml` within it, and then, in that file, set a default value for server.port.
-(We’ll instruct the other instances of the application to run on other ports, as well, so that none of the `Say Hello` instances will conflict with the client when we get that running).
-While we’re in this file, we’ll set the `spring.application.name` for our service too.
+We are going to run multiple instances of this application locally alongside a client service application.
+To get started:
 
-`say-hello/src/main/resources/application.yml`
+. Create a `src/main/resources` directory.
+. Create a `application.yml` file within the directory.
+. In that file, set a default value for `server.port`.
 
+(We will instruct the other instances of the application to run on other ports so that none of the `Say Hello` instances conflict with the client when we get that running).
+While we are in this file, we can set the `spring.application.name` for our service too.
+
+The following listing shows the contents of `say-hello/src/main/resources/application.yml`:
+
+====
 [source,java,tabsize=2]
 ----
 include::complete/say-hello/src/main/resources/application.yml[]
 ----
+====
 
-== Access from a client service
+== Access from a Client Service
 
-The "User" application will be what our user sees.
-It will make a call to the Say Hello application to get a greeting and then send that to our user when the user visits the endpoints at `/hi` and `/hello`.
+Our users see the `User` application.
+It makes a call to the `Say Hello` application to get a greeting and then sends that greeting to our user when the user visits the endpoints at `/hi` and `/hello`.
 
-In the User application directory, under `src/main/java/hello`, add the file `UserApplication.java`:
+In the User application directory, under `src/main/java/hello`, add the `UserApplication.java` file:
 
-`user/src/main/java/hello/UserApplication.java`
+The following listing shows the contents of `user/src/main/java/hello/UserApplication.java`
 
+====
 [source,java,tabsize=2]
 ----
 include::complete/user/src/main/java/hello/UserApplication.java[]
 ----
+====
+We also need a `@Configuration` class where we set up a load-balanced `WebClient.Builder` instance:
 
-We also add a `@Configuration` class where we will set up a load-balanced `WebClient.Builder` instance:
+The following listing shows the contents of `user/src/main/java/hello/WebClientConfig.java`:
 
-`user/src/main/java/hello/WebClientConfig.java`
-
+====
 [source,java,tabsize=2]
 ----
 include::complete/user/src/main/java/hello/WebClientConfig.java[]
 ----
+====
 
-The configuration provides a `@LoadBalanced WebClient.Builder` instance, that we use when someone hits the `hi` endpoint of
+The configuration provides a `@LoadBalanced WebClient.Builder` instance, which we use when someone hits the `hi` endpoint of
 `UserApplication.java`.
-Once the `hi` endpoint is hit, we will use this builder to create a `WebClient` instance which will be used to make an HTTP `GET` request to the Say Hello service's URL and give us the result as a `String`.
+Once the `hi` endpoint is hit, we use this builder to create a `WebClient` instance, which makes an HTTP `GET` request to the `Say Hello` service's URL and gives us the result as a `String`.
 
-In `UserApplication.java`, we have also added a `/hello` endpoint that does the same action underneath, however, rather than using the `@LoadBalanced` annotation, we make use of an `@Autowired` load-balancer exchange filter function `lbFunction` that we pass using the `filter()` method to a `WebClient` instance that we are building programmatically.
+In `UserApplication.java`, we have also added a `/hello` endpoint that does the same action. However, rather than use the `@LoadBalanced` annotation, we use an `@Autowired` load-balancer exchange filter function (`lbFunction`), which we pass by using the `filter()` method to a `WebClient` instance that we programmatically build.
 
-TIP: Even though we set up the load-balanced `WebClient` instance slightly differently for the two endpoints, the end behaviour for both is exactly the same.
-Spring Cloud LoadBalancer is used underneath to select an appropriate instance of the "Say Hello" service.
+TIP: Even though we set up the load-balanced `WebClient` instance slightly differently for the two endpoints, the end behavior for both is exactly the same.
+Spring Cloud LoadBalancer is used to select an appropriate instance of the `Say Hello` service.
 
 Add the `spring.application.name` and `server.port` properties to `src/main/resources/application.properties` or `src/main/resources/application.yml`:
 
-`user/src/main/resources/application.yml`
+The following listing shows the contents of `user/src/main/resources/application.yml`
 
+====
 [source,yaml]
 ----
 include::complete/user/src/main/resources/application.yml[]
 ----
+====
 
-== Load-balance across server instances
+== Loadbalance Across Server Instances
 
 Now we can access `/hi` or `hello` on the User service and see a friendly greeting:
 
+====
 [source,bash]
 ----
 $ curl http://localhost:8888/hi
@@ -113,80 +213,100 @@ Greetings, Mary!
 $ curl http://localhost:8888/hi?name=Orontes
 Salutations, Orontes!
 ----
+====
 
-As you will see, in `WebClientConfig.java`, we pass a custom configuration for the LoadBalancer using the `@LoadBalancerClient` annotation:
+In `WebClientConfig.java`, we pass a custom configuration for the LoadBalancer by using the `@LoadBalancerClient` annotation:
 
-`@LoadBalancerClient(name = "say-hello", configuration = SayHelloConfiguration.class)`.
-This means that whenever a service named `say-hello` is being contacted, instead of running with the default setup, Spring Cloud LoadBalancer will use the configuration provided in `SayHelloConfiguration.java`:
+====
+[source,java]
+----
+@LoadBalancerClient(name = "say-hello", configuration = SayHelloConfiguration.class)
+----
+====
 
-`user/src/main/java/hello/SayHelloConfiguration.java`
+This means that, whenever a service named `say-hello` is contacted, instead of running with the default setup, Spring Cloud LoadBalancer uses the configuration provided in `SayHelloConfiguration.java`.
 
+The following listing shows the contents of `user/src/main/java/hello/SayHelloConfiguration.java`:
+
+====
 [source,java,tabsize=2]
 ----
 include::complete/user/src/main/java/hello/SayHelloConfiguration.java[]
 ----
+====
 
-There, we provide a custom `ServiceInstanceListSupplier` with 3 hard-coded instances that Spring Cloud LoadBalancer will choose from while making the calls to the "Say Hello" service.
+In that class, we provide a custom `ServiceInstanceListSupplier` with three hard-coded instances that Spring Cloud LoadBalancer chooses from while making the calls to the `Say Hello` service.
 
 NOTE: This step has been added to explain how you can pass your own custom configuration to the Spring Cloud LoadBalancer.
-However, you don't need to use the `@LoadBalancerClient` annotation and create your own configuration for the LoadBalancer.
-The most typical way, is to use Spring Cloud LoadBalancer with service discovery.
-If you have any `DiscoveryClient` on your classpath, the default Spring Cloud LoadBalancer configuration will use it under the hood to check for service instances. Like this, you will also only choose from instances that are up and running.
+However, you need not use the `@LoadBalancerClient` annotation and create your own configuration for the LoadBalancer.
+The most typical way is to use Spring Cloud LoadBalancer with service discovery.
+If you have any `DiscoveryClient` on your classpath, the default Spring Cloud LoadBalancer configuration uses it to check for service instances. As a result, you only choose from instances that are up and running.
 You can learn how to use `ServiceDiscovery` with this https://spring.io/guides/gs/service-registration-and-discovery/[guide].
 
-We also add an `application.yml` file with default `server.port` and `spring.application.name`:
+We also add an `application.yml` file with default `server.port` and `spring.application.name`.
 
-`user/src/main/resources/application.yml`
+The following listing shows the contents of `user/src/main/resources/application.yml`:
 
+====
 [source,yaml]
 ----
 include::complete/user/src/main/resources/application.yml[]
 ----
+====
 
-== Trying it out
+== Testing the Loadbalancer
 
-Run the Say Hello service, using either Gradle:
+The following listing shows how to run the `Say Hello` service with Gradle:
 
+====
+[source,bash]
 ----
 $ ./gradlew bootRun
 ----
+====
 
-or Maven:
+The following listing shows how to run the `Say Hello` service with Maven:
 
+====
+[source,bash]
 ----
 $ mvn spring-boot:run
 ----
+====
 
-Run other instances on ports 9092 and 9999, again using either Gradle:
+You can run other instances on ports 9092 and 9999
+To do so with Gradle, run the following command:
 
+====
+[source,bash]
 ----
 $ SERVER_PORT=9092 ./gradlew bootRun
 ----
+====
 
-or Maven:
+To do so with Maven, run the following command:
 
+====
+[source,bash]
 ----
 $ SERVER_PORT=9999 mvn spring-boot:run
 ----
+====
 
-Then start up the User service.
-Access `localhost:8888/hi` and then watch the Say Hello service instances.
+Then you can start the `User` service.
+To do so, access `localhost:8888/hi` and watch the `Say Hello` service instances.
 
-And your requests to the User service should result in calls to Say Hello being spread across the running instances in round-robin form:
+Your requests to the `User` service should result in calls to `Say Hello` being spread across the running instances in round-robin fashion:
 
+====
 ----
 2016-03-09 21:15:28.915  INFO 90046 --- [nio-8090-exec-7] hello.SayHelloApplication                : Access /greeting
 ----
-
-
-== Test the application
-
-Now that the application is running, you can test it.
-
+====
 
 == Summary
 
-Congratulations! You've just developed a Spring application!
+Congratulations! You have just developed a Spring Loadbalancer application!
 
 
 
