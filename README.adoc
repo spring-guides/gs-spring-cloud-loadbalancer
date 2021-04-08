@@ -299,6 +299,15 @@ $ SERVER_PORT=9999 mvn spring-boot:run
 ----
 ====
 
+Or,in win10
+
+====
+[source,bash]
+----
+mvn spring-boot:run -Dspring-boot.run.arguments="--server.port=9999"
+----
+====
+
 Then you can start the `User` service.
 To do so, access `localhost:8888/hi` and watch the `Say Hello` service instances.
 
