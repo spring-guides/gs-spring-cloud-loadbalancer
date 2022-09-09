@@ -11,9 +11,6 @@ import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 
-/**
- * @author Olga Maciaszek-Sharma
- */
 public class SayHelloConfiguration {
 
 	@Bean

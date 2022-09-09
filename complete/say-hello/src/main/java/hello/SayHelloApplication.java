@@ -16,26 +16,26 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 public class SayHelloApplication {
 
-  private static Logger log = LoggerFactory.getLogger(SayHelloApplication.class);
+    private static final Logger log = LoggerFactory.getLogger(SayHelloApplication.class);
 
-	public static void main(String[] args) {
-		SpringApplication.run(SayHelloApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SayHelloApplication.class, args);
+    }
 
-  @GetMapping("/greeting")
-  public String greet() {
-	log.info("Access /greeting");
+    @GetMapping("/greeting")
+    public String greet() {
+        log.info("Access /greeting");
 
-	List<String> greetings = Arrays.asList("Hi there", "Greetings", "Salutations");
-	Random rand = new Random();
+        List<String> greetings = Arrays.asList("Hi there", "Greetings", "Salutations");
+        Random rand = new Random();
 
-	int randomNum = rand.nextInt(greetings.size());
-	return greetings.get(randomNum);
-  }
+        int randomNum = rand.nextInt(greetings.size());
+        return greetings.get(randomNum);
+    }
 
-  @GetMapping("/")
-  public String home() {
-	log.info("Access /");
-	return "Hi!";
-  }
+    @GetMapping("/")
+    public String home() {
+        log.info("Access /");
+        return "Hi!";
+    }
 }

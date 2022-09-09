@@ -12,13 +12,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static org.assertj.core.api.BDDAssertions.then;
@@ -83,12 +83,12 @@ class UserApplicationTests {
 
 		static AtomicInteger atomicInteger = new AtomicInteger();
 
-		@RequestMapping(value = "/greeting")
+		@GetMapping(value = "/greeting")
 		public Integer greet() {
 			return atomicInteger.incrementAndGet();
 		}
 
-		@RequestMapping(value = "/")
+		@GetMapping(value = "/")
 		public String health() {
 			return "ok";
 		}
