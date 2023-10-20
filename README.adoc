@@ -64,7 +64,7 @@ you how to use Maven or Gradle.
 [[initial]]
 == Starting with Spring Initializr
 
-If you use Maven for the `Say Hello` project, visit the https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.4.4.RELEASE&packaging=jar&jvmVersion=1.8&groupId=com.example&artifactId=spring-cloud-loadbalancer-say-hello&name=spring-cloud-loadbalancer-say-hello&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.spring-cloud-loadbalancer-say-hello&dependencies=web[Spring Initializr] to generate a new project with the required dependency (Spring Web).
+If you use Maven for the `Say Hello` project, visit the https://start.spring.io/#!type=maven-project&language=java&packaging=jar&jvmVersion=17&groupId=com.example&artifactId=spring-cloud-loadbalancer-say-hello&name=spring-cloud-loadbalancer-say-hello&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.spring-cloud-loadbalancer-say-hello&dependencies=web[Spring Initializr] to generate a new project with the required dependency (Spring Web).
 
 The following listing shows the `pom.xml` file that is created when you choose Maven:
 
@@ -75,7 +75,7 @@ include::initial/say-hello/pom.xml[]
 ----
 ====
 
-If you use Gradle for the `Say Hello` project, visit the https://start.spring.io/#!type=gradle-project&language=java&platformVersion=2.4.4.RELEASE&packaging=jar&jvmVersion=1.8&groupId=com.example&artifactId=spring-cloud-loadbalancer-say-hello&name=spring-cloud-loadbalancer-say-hello&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.spring-cloud-loadbalancer-say-hello&dependencies=web[Spring Initializr] to generate a new project with the required dependency (Spring Web).
+If you use Gradle for the `Say Hello` project, visit the https://start.spring.io/#!type=gradle-project&language=java&&packaging=jar&jvmVersion=17&groupId=com.example&artifactId=spring-cloud-loadbalancer-say-hello&name=spring-cloud-loadbalancer-say-hello&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.spring-cloud-loadbalancer-say-hello&dependencies=web[Spring Initializr] to generate a new project with the required dependency (Spring Web).
 
 The following listing shows the `build.gradle` file that is created when you choose Gradle:
 
@@ -86,7 +86,7 @@ include::initial/say-hello/build.gradle[]
 ----
 ====
 
-If you use Maven for the `User` project, visit the https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.4.4.RELEASE&packaging=jar&jvmVersion=1.8&groupId=com.example&artifactId=spring-cloud-loadbalancer-user&name=spring-cloud-loadbalancer-user&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.spring-cloud-loadbalancer-user&dependencies=cloud-loadbalancer,webflux[Spring Initializr] to generate a new project with the required dependencies (Cloud Loadbalancer and Spring Reactive Web).
+If you use Maven for the `User` project, visit the https://start.spring.io/#!type=maven-project&language=java&packaging=jar&jvmVersion=17&groupId=com.example&artifactId=spring-cloud-loadbalancer-user&name=spring-cloud-loadbalancer-user&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.spring-cloud-loadbalancer-user&dependencies=cloud-loadbalancer,webflux[Spring Initializr] to generate a new project with the required dependencies (Cloud Loadbalancer and Spring Reactive Web).
 
 The following listing shows the `pom.xml` file that is created when you choose Maven:
 
@@ -97,7 +97,7 @@ include::initial/user/pom.xml[]
 ----
 ====
 
-If you use Gradle for the `User` project, visit the https://start.spring.io/#!type=gradle-project&language=java&platformVersion=2.4.4.RELEASE&packaging=jar&jvmVersion=1.8&groupId=com.example&artifactId=spring-cloud-loadbalancer-user&name=spring-cloud-loadbalancer-user&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.spring-cloud-loadbalancer-user&dependencies=cloud-loadbalancer,webflux[Spring Initializr] to generate a new project with the required dependencies (Cloud Loadbalancer and Spring Reactive Web).
+If you use Gradle for the `User` project, visit the https://start.spring.io/#!type=gradle-project&language=java&packaging=jar&jvmVersion=17&groupId=com.example&artifactId=spring-cloud-loadbalancer-user&name=spring-cloud-loadbalancer-user&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.spring-cloud-loadbalancer-user&dependencies=cloud-loadbalancer,webflux[Spring Initializr] to generate a new project with the required dependencies (Cloud Loadbalancer and Spring Reactive Web).
 
 The following listing shows the `build.gradle` file that is created when you choose Gradle:
 
@@ -278,27 +278,32 @@ $ mvn spring-boot:run
 ----
 ====
 
-You can run other instances on ports 9092 and 9999
-To do so with Gradle, run the following command:
+To achieve load balancing, you need two servers running separate instances of the same application.
+You can achieve that by running a second instance of the `Say Hello` service on a different port.
+We use port 9999 for this example.
+
+To do so with Gradle, open a new terminal and run the following command:
 
 ====
 [source,bash]
 ----
-$ SERVER_PORT=9092 ./gradlew bootRun
+export SERVER_PORT=9092 
+./gradlew bootRun
 ----
 ====
 
-To do so with Maven, run the following command:
+To do so with Maven, open a new terminal and run the following commands:
 
 ====
 [source,bash]
 ----
-$ SERVER_PORT=9999 mvn spring-boot:run
+export SERVER_PORT=9999 
+mvn spring-boot:run
 ----
 ====
 
-Then you can start the `User` service.
-To do so, access `localhost:8888/hi` and watch the `Say Hello` service instances.
+Then you can start the `User` service. At this point, you should have three terminals: two for two instances of `Say Hello` and one for `User`.
+Then you can access `localhost:8888/hi` and watch the `Say Hello` service instances.
 
 Your requests to the `User` service should result in calls to `Say Hello` being spread across the running instances in round-robin fashion:
 
