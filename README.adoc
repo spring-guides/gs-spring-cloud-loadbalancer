@@ -19,7 +19,7 @@ client-side load-balancing in calls to another microservice.
 * You can also import the code straight into your IDE:
 * Spring Tool Suite (STS) or IntelliJ IDEA
 
-[scratch]
+[[scratch]]
 == Create a Root Project
 
 This guide walks through building two projects, one of which is a dependency to the other.
