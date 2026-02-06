@@ -10,14 +10,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
-/**
- * @author Olga Maciaszek-Sharma
- */
 @SpringBootApplication
 @RestController
 public class UserApplication {
 
 	private final WebClient.Builder loadBalancedWebClientBuilder;
+
 	private final ReactorLoadBalancerExchangeFilterFunction lbFunction;
 
 	public UserApplication(WebClient.Builder webClientBuilder,

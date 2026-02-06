@@ -23,19 +23,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
-/**
- * @author Marcin Grzejszczak
- * @author Olga Maciaszek-Sharma
- */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = UserApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class UserApplicationTests {
 
 	private ConfigurableApplicationContext application1;
+
 	private ConfigurableApplicationContext application2;
+
 	private ConfigurableApplicationContext application3;
+
 	@LocalServerPort
 	private int port;
+
 	@Autowired
 	private TestRestTemplate testRestTemplate;
 
