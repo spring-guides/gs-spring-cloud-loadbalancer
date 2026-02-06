@@ -9,15 +9,12 @@ This guide walks you through the process of creating load-balanced microservices
 You will build a microservice application that uses Spring Cloud LoadBalancer to provide
 client-side load-balancing in calls to another microservice.
 
+== What You Need
 
-== What You Will Need
+:java_version: 17
+include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/main/prereq_editor_jdk_buildtools.adoc[]
 
-* About 15 minutes
-* A favorite text editor or IDE
-* JDK 1.8 or later
-* Gradle 6+ or Maven 3.5+
-* You can also import the code straight into your IDE:
-* Spring Tool Suite (STS) or IntelliJ IDEA
+include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/main/how_to_complete_this_guide.adoc[]
 
 [[scratch]]
 == Create a Root Project
