@@ -9,12 +9,11 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>spring-cloud-loadbalancer-say-hello</artifactId>
+	<artifactId>say-hello</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>spring-cloud-loadbalancer-say-hello</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
-		<spring-boot.repackage.skip>true</spring-boot.repackage.skip>
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
@@ -38,5 +37,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>

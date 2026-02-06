@@ -71,7 +71,7 @@ include::initial/say-hello/pom.xml[]
 ----
 ====
 
-If you use Gradle for the `Say Hello` project, visit the https://start.spring.io/#!type=gradle-project&language=java&&packaging=jar&jvmVersion=17&groupId=com.example&artifactId=spring-cloud-loadbalancer-say-hello&name=spring-cloud-loadbalancer-say-hello&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.spring-cloud-loadbalancer-say-hello&dependencies=web[Spring Initializr] to generate a new project with the required dependency (Spring Web).
+If you use Gradle for the `Say Hello` project, visit the https://start.spring.io/#!type=gradle-project&language=java&&packaging=jar&jvmVersion=17&groupId=com.example&artifactId=say-hello&name=spring-cloud-loadbalancer-say-hello&description=Demo%20project%20for%20Spring%20Boot&packageName=hello&dependencies=web[Spring Initializr] to generate a new project with the required dependency (Spring Web).
 
 The following listing shows the `build.gradle` file that is created when you choose Gradle:
 
@@ -82,7 +82,7 @@ include::initial/say-hello/build.gradle[]
 ----
 ====
 
-If you use Maven for the `User` project, visit the https://start.spring.io/#!type=maven-project&language=java&packaging=jar&jvmVersion=17&groupId=com.example&artifactId=spring-cloud-loadbalancer-user&name=spring-cloud-loadbalancer-user&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.spring-cloud-loadbalancer-user&dependencies=cloud-loadbalancer,webflux[Spring Initializr] to generate a new project with the required dependencies (Cloud Loadbalancer and Spring Reactive Web).
+If you use Maven for the `User` project, visit the https://start.spring.io/#!type=maven-project&language=java&packaging=jar&jvmVersion=17&groupId=com.example&artifactId=user&name=spring-cloud-loadbalancer-user&description=Demo%20project%20for%20Spring%20Boot&packageName=user&dependencies=cloud-loadbalancer,webflux[Spring Initializr] to generate a new project with the required dependencies (Cloud Loadbalancer and Spring Reactive Web).
 
 The following listing shows the `pom.xml` file that is created when you choose Maven:
 
